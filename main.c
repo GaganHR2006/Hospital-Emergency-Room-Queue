@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include<string.h>
 typedef struct {
     int priority;
     char name[20];
@@ -8,7 +8,7 @@ typedef struct {
 int heapSize = 0;
 Patient heap[100];
 
-void heapify(Patient heap[100],int heapSize,int i);
+void heapifyUp(Patient heap[100],int heapSize,int i);
 
 void swap(Patient *a,Patient *b)
 {
@@ -43,9 +43,7 @@ void insertPatient(Patient heap[100])
     {
         swap(&heap[i], &heap[parent(i)]);
         i = parent(i);
-    }
-   
-    
+    }    
 }
 
 void heapify(Patient heap[100],int heapSize,int i)
@@ -53,11 +51,11 @@ void heapify(Patient heap[100],int heapSize,int i)
     int smallest = i;
     int left = leftChild(i);
     int right = rightChild(i);
-    if(left<=heapSize && heap[left].priority<heap[smallest].priority)
+    if(left<heapSize && heap[left].priority<heap[smallest].priority)
     {
         smallest = left;
     }
-    if(right<=heapSize && heap[right].priority<heap[smallest].priority)
+    if(right<heapSize && heap[right].priority<heap[smallest].priority)
     {
         smallest = right;
     }
@@ -66,8 +64,21 @@ void heapify(Patient heap[100],int heapSize,int i)
         swap (&heap[smallest],&heap[i]);
         heapify(heap,heapSize,smallest);
     }
+}
 
-
+Patient extractMin()
+{
+    if(heapSize==0)
+    {
+        printf("No patients to Call\n");
+    }
+    Patient temp;
+    strcpy(temp.name, heap[0].name);
+    temp.priority = heap[0].priority;
+    heap[0] = heap[heapSize-1];
+    heapSize--;
+    heapify(heap,heapSize,0);
+    return temp;
 }
 int main() {
    
@@ -78,6 +89,14 @@ int main() {
     insertPatient(heap);
      
     insertPatient(heap);
+    printf("List of patients:\n");
+    for (int i=0;i<heapSize;i++)
+    {
+        printf("%s %d\n",heap[i].name,heap[i].priority);
+    }
+    Patient temp = extractMin();
+    printf("Next patient is %s priority %d\n",temp.name,temp.priority);
+    printf("List of patients:\n");
     for (int i=0;i<heapSize;i++)
     {
         printf("%s %d\n",heap[i].name,heap[i].priority);
