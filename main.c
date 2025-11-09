@@ -1,14 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include<string.h>
 typedef struct {
     int priority;
     char name[20];
 }Patient;
 int heapSize = 0;
 Patient heap[100];
-
-void heapify(Patient heap[100],int heapSize,int i);
 
 void swap(Patient *a,Patient *b)
 {
@@ -37,15 +35,14 @@ void insertPatient(Patient heap[100])
     scanf("%s",heap[heapSize].name);
     printf("Enter the priority:\n");
     scanf("%d",&heap[heapSize].priority);
+    printf("Patient %s with priority %d added to the queue\n",heap[heapSize].name,heap[heapSize].priority);
     heapSize++;
     int i = heapSize - 1;
     while (i > 0 && heap[parent(i)].priority > heap[i].priority) 
     {
         swap(&heap[i], &heap[parent(i)]);
         i = parent(i);
-    }
-   
-    
+    }    
 }
 
 void heapify(Patient heap[100],int heapSize,int i)
@@ -53,11 +50,11 @@ void heapify(Patient heap[100],int heapSize,int i)
     int smallest = i;
     int left = leftChild(i);
     int right = rightChild(i);
-    if(left<=heapSize && heap[left].priority<heap[smallest].priority)
+    if(left<heapSize && heap[left].priority<heap[smallest].priority)
     {
         smallest = left;
     }
-    if(right<=heapSize && heap[right].priority<heap[smallest].priority)
+    if(right<heapSize && heap[right].priority<heap[smallest].priority)
     {
         smallest = right;
     }
@@ -66,21 +63,49 @@ void heapify(Patient heap[100],int heapSize,int i)
         swap (&heap[smallest],&heap[i]);
         heapify(heap,heapSize,smallest);
     }
+}
 
+int extractMin()
+{
+    if(heapSize==0)
+    {
+        printf("No patients to Call\n");
+        return 0;
 
+    }
+    Patient temp;
+    strcpy(temp.name, heap[0].name);
+    temp.priority = heap[0].priority;
+    printf("Next patient is %s priority %d\n",temp.name,temp.priority);
+    heap[0] = heap[heapSize-1];
+    heapSize--;
+    heapify(heap,heapSize,0);
 }
 int main() {
-   
-    printf("Hello, ER! Program is running.\n");
-
-    insertPatient(heap);
-  
-    insertPatient(heap);
-     
-    insertPatient(heap);
-    for (int i=0;i<heapSize;i++)
+    int choice;
+    Patient p;
+   while(1)
+   {
+    printf("1.Add Patient\n");
+    printf("2.Call Next Patient\n");
+    printf("3.Exit\n");
+    scanf("%d",&choice);
+    switch (choice)
     {
-        printf("%s %d\n",heap[i].name,heap[i].priority);
+    case 1:
+        insertPatient(heap);
+        
+        break;
+    case 2:
+        extractMin();
+        
+        break;
+    case 3:
+        return 0;
+    default:
+        printf("Invalid choice\n");
+        break;
     }
+   }
     return 0;
 }
